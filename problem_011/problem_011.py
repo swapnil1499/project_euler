@@ -1,27 +1,49 @@
 import time
+import numpy as np
 
 start_time = time.time()
 
 f = open("number_grid.txt", 'r')
 number_grid = f.read()
+f.close()
 
 number_list = number_grid.split()
+n_grid = np.zeros([20, 20], int)
 
-product_h = 1
-product_v = 1
-product_d = 1
-for idx, x in enumerate(number_list):
-    print(int(number_list[idx]))
-    print(int(number_list[idx + 20]))
-    if idx+3 >= 20:
-        product_h = int(number_list[idx])*int(number_list[idx+1])*int(number_list[idx+2])*int(number_list[idx+3])
-    product_v = int(number_list[idx])*int(number_list[idx+20])*int(number_list[idx+40])*int(number_list[idx+60])
-    product_d = int(number_list[idx])*int(number_list[idx+21])*int(number_list[idx+42])*int(number_list[idx+63])
+for i in range(0, 20):
+    n_grid[i, :] = number_list[20 * i:(20 * i) + 20]
 
-    if idx >= 0:
-        break
+# for i in number_list:
+product_h = 0
+product_v = 0
+product_d1 = 0
+product_d2 = 0
+product_ans = 0;
+for m in range(0, 20):
+    for n in range(0, 20):
+        if n + 3 < 20:
+            product_h = n_grid[m, n] * n_grid[m, n + 1] * n_grid[m, n + 2] * n_grid[m, n + 3]
 
-print(product_h)
-print(product_v)
-print(product_d)
+        if m + 3 < 20:
+            product_v = n_grid[m, n] * n_grid[m + 1, n] * n_grid[m + 2, n] * n_grid[m + 3, n]
+
+        if n + 3 < 20 and m + 3 < 20:
+            product_d1 = n_grid[m, n] * n_grid[m + 1, n + 1] * n_grid[m + 2, n + 2] * n_grid[m + 3, n + 3]
+
+        if n - 3 >= 0 and m + 3 < 20:
+            product_d2 = n_grid[m, n] * n_grid[m + 1, n - 1] * n_grid[m + 2, n - 2] * n_grid[m + 3, n - 3]
+
+        if product_h > product_ans:
+            product_ans = product_h
+
+        if product_v > product_ans:
+            product_ans = product_v
+
+        if product_d1 > product_ans:
+            product_ans = product_d1
+
+        if product_d2 > product_ans:
+            product_ans = product_d2
+
+print("Answer = ", product_ans)
 print("--- %s seconds ---" % (time.time() - start_time))
